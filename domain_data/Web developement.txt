@@ -1,0 +1,104 @@
+Domain: Web Development
+Type: Beginner
+
+Courses:
+- "The Complete Web Developer Course" (Udemy)
+- "HTML, CSS, and JavaScript for Web Developers" (Coursera)
+
+Roadmap:
+1. Learn HTML, CSS, and basic JavaScript.
+2. Understand responsive web design principles.
+3. Get familiar with version control (Git, GitHub).
+4. Learn basic front-end frameworks like Bootstrap.
+5. Build simple static websites and deploy them using GitHub Pages.
+
+Docs:
+- MDN Web Docs (https://developer.mozilla.org/)
+- W3Schools (https://www.w3schools.com/)
+
+Learning Platform:
+- FreeCodeCamp
+- Codecademy
+
+Projects Suggestion:
+1. Create a personal portfolio website.
+2. Develop a simple blog page with HTML and CSS.
+
+Certificate Course:
+- "Meta Front-End Developer Certificate" (Coursera)
+- "Google UX Design Professional Certificate" (Google)
+
+Learning Resources:
+- "HTML & CSS: Design and Build Websites" by Jon Duckett
+- "JavaScript and JQuery: Interactive Front-End Development" by Jon Duckett
+
+---
+
+Domain: Web Development
+Type: Intermediate
+
+Courses:
+- "The Complete JavaScript Course" (Udemy)
+- "Full-Stack Web Development with React" (Coursera)
+
+Roadmap:
+1. Learn JavaScript ES6+ and asynchronous programming.
+2. Explore front-end frameworks (React, Vue, or Angular).
+3. Understand REST APIs and HTTP requests.
+4. Learn backend basics with Node.js and Express.js.
+5. Work with databases (SQL and NoSQL like MongoDB).
+
+Docs:
+- React Documentation (https://react.dev/)
+- Node.js Documentation (https://nodejs.org/en/docs/)
+
+Learning Platform:
+- Frontend Mentor
+- The Odin Project
+
+Projects Suggestion:
+1. Build a weather app using a public API.
+2. Create a to-do list with local storage and authentication.
+
+Certificate Course:
+- "IBM Full-Stack Cloud Developer" (Coursera)
+- "AWS Certified Developer – Associate"
+
+Learning Resources:
+- "You Don’t Know JS" by Kyle Simpson
+- "Eloquent JavaScript" by Marijn Haverbeke
+
+---
+
+Domain: Web Development
+Type: Advanced
+
+Courses:
+- "Full-Stack Web Development with Next.js" (Udemy)
+- "Advanced Web Development" (LinkedIn Learning)
+
+Roadmap:
+1. Master server-side rendering and static site generation (Next.js, Nuxt.js).
+2. Optimize performance and security for web applications.
+3. Explore cloud computing and serverless functions (AWS, Firebase).
+4. Learn DevOps practices and CI/CD pipelines.
+
+Docs:
+- Next.js Documentation (https://nextjs.org/docs)
+- Web Performance Docs (https://web.dev/)
+
+Learning Platform:
+- Vercel
+- Netlify
+
+Projects Suggestion:
+1. Develop a SaaS product with authentication and payment integration.
+2. Build a real-time chat application using WebSockets.
+
+Certificate Course:
+- "Google Cloud Associate Cloud Engineer" (Google)
+- "Microsoft Certified: Azure Developer Associate"
+
+Learning Resources:
+- "The Pragmatic Programmer" by Andrew Hunt and David Thomas
+- "Clean Code" by Robert C. Martin

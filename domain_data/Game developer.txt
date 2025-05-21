@@ -1,0 +1,105 @@
+Domain: Game Development
+Type: Beginner
+
+Courses:
+- "Introduction to Game Development" (Coursera, Michigan State University)
+- "Complete C# Unity Game Developer 2D" (Udemy)
+
+Roadmap:
+1. Learn programming basics (C#, C++, or Python for game development).
+2. Get familiar with game engines (Unity, Unreal Engine, Godot).
+3. Understand 2D and 3D game concepts (sprites, physics, rendering).
+4. Explore basic animation and sound integration.
+5. Create simple games and deploy them on different platforms.
+
+Docs:
+- Unity Documentation (https://docs.unity3d.com/)
+- Unreal Engine Documentation (https://docs.unrealengine.com/)
+
+Learning Platform:
+- GameDev.tv
+- Udemy
+
+Projects Suggestion:
+1. Develop a simple 2D platformer.
+2. Create a basic endless runner game.
+
+Certificate Course:
+- "Unity Certified Associate" (Unity)
+- "Unreal Authorized Training Program" (Unreal Engine)
+
+Learning Resources:
+- "Game Programming Patterns" by Robert Nystrom
+- "The Art of Game Design: A Book of Lenses" by Jesse Schell
+
+---
+
+Domain: Game Development
+Type: Intermediate
+
+Courses:
+- "Game Design and Development Specialization" (Coursera)
+- "Mastering Unity: Advanced Game Development" (Udemy)
+
+Roadmap:
+1. Learn advanced game mechanics (AI, procedural generation, multiplayer).
+2. Explore physics engines, shaders, and optimization techniques.
+3. Implement advanced scripting with C# (Unity) or Blueprints/C++ (Unreal Engine).
+4. Work with game UI, animations, and VFX.
+5. Deploy games to multiple platforms (PC, mobile, consoles).
+
+Docs:
+- Godot Documentation (https://docs.godotengine.org/)
+- Game AI Pro Articles (http://www.gameaipro.com/)
+
+Learning Platform:
+- GDC Vault
+- Pluralsight
+
+Projects Suggestion:
+1. Develop a tower defense game.
+2. Create a multiplayer battle arena game.
+
+Certificate Course:
+- "Unreal Engine Developer Certification" (Unreal Engine)
+- "Unity Certified Expert: Programmer" (Unity)
+
+Learning Resources:
+- "Game Engine Architecture" by Jason Gregory
+- "AI for Game Developers" by David M. Bourg and Glenn Seemann
+
+---
+
+Domain: Game Development
+Type: Advanced
+
+Courses:
+- "Advanced Computer Graphics for Games" (Udacity)
+- "Physics-Based Simulations in Games" (MIT OpenCourseWare)
+
+Roadmap:
+1. Master game engine architecture and performance optimization.
+2. Learn about procedural content generation and advanced AI techniques.
+3. Work on VR/AR game development.
+4. Explore cloud gaming and networking for large-scale multiplayer games.
+5. Develop your own game engine or contribute to open-source projects.
+
+Docs:
+- OpenGL Documentation (https://www.khronos.org/opengl/)
+- Vulkan API Docs (https://www.khronos.org/vulkan/)
+
+Learning Platform:
+- SIGGRAPH
+- GameDev.net
+
+Projects Suggestion:
+1. Build a real-time strategy (RTS) game with AI opponents.
+2. Develop a physics-based VR simulation.
+
+Certificate Course:
+- "Certified Graphics Programmer" (NVIDIA)
+- "Advanced Unity Certification" (Unity)
+
+Learning Resources:
+- "Real-Time Rendering" by Tomas Akenine-Möller
+- "Mathematics for 3D Game Programming and Computer Graphics" by Eric Lengyel

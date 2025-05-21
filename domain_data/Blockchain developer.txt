@@ -1,0 +1,119 @@
+Domain: Blockchain Developer
+Type: Beginner
+
+Courses:
+
+    "Blockchain Basics" (Coursera)
+    "Bitcoin and Cryptocurrency Technologies" (Princeton University via Coursera)
+
+Roadmap:
+
+    Learn the fundamentals of blockchain (decentralization, consensus, cryptography).
+    Understand Bitcoin and how it works (transactions, mining, wallets).
+    Get familiar with programming basics (Python or JavaScript).
+    Explore Ethereum and smart contracts using Solidity.
+
+Docs:
+
+    Bitcoin Whitepaper (https://bitcoin.org/bitcoin.pdf)
+    Ethereum Documentation (https://ethereum.org/en/developers/docs/)
+
+Learning Platform:
+
+    CryptoZombies
+    Codecademy
+
+Projects Suggestion:
+
+    Create a simple cryptocurrency wallet using Python.
+    Write and deploy a basic smart contract on Ethereum’s testnet (e.g., Ropsten).
+
+Certificate Course:
+
+    "Blockchain Developer Nanodegree" (Udacity)
+    "IBM Blockchain Essentials" (Coursera)
+
+Learning Resources:
+
+    "Mastering Bitcoin" by Andreas M. Antonopoulos
+    "Blockchain Basics: A Non-Technical Introduction" by Daniel Drescher
+
+Domain: Blockchain Developer
+Type: Intermediate
+
+Courses:
+
+    "Ethereum and Solidity: The Complete Developer’s Guide" (Udemy)
+    "Developing Blockchain Applications with Hyperledger" (edX)
+
+Roadmap:
+
+    Master Solidity for smart contract development (functions, events, modifiers).
+    Learn about decentralized applications (DApps) and front-end integration (Web3.js).
+    Explore blockchain frameworks like Hyperledger Fabric or Corda.
+    Understand token standards (ERC-20, ERC-721) and their implementation.
+
+Docs:
+
+    Solidity Documentation (https://docs.soliditylang.org/)
+    Web3.js Documentation (https://web3js.readthedocs.io/)
+
+Learning Platform:
+
+    Truffle Suite
+    Remix IDE
+
+Projects Suggestion:
+
+    Build a decentralized voting system using Solidity and Web3.js.
+    Create and deploy an ERC-20 token on Ethereum.
+
+Certificate Course:
+
+    "Certified Blockchain Developer – Ethereum (CBDE)" (Blockchain Council)
+    "Hyperledger Fabric for Developers" (Linux Foundation)
+
+Learning Resources:
+
+    "Mastering Ethereum" by Andreas M. Antonopoulos and Gavin Wood
+    "Building Blockchain Projects" by Narayan Prusty
+
+Domain: Blockchain Developer
+Type: Advanced
+
+Courses:
+
+    "Advanced Blockchain Development with Solidity" (Udemy)
+    "Decentralized Finance (DeFi) Infrastructure" (Coursera)
+
+Roadmap:
+
+    Master advanced smart contract optimization (gas efficiency, security audits).
+    Learn about layer-2 solutions (e.g., Polygon, Optimism) and cross-chain bridges.
+    Explore decentralized finance (DeFi) protocols and yield farming.
+    Stay updated with blockchain scalability and privacy (e.g., zero-knowledge proofs).
+
+Docs:
+
+    OpenZeppelin Contracts (https://docs.openzeppelin.com/contracts/)
+    Polygon Documentation (https://docs.polygon.technology/)
+
+Learning Platform:
+
+    Hardhat
+    Chainlink Labs
+
+Projects Suggestion:
+
+    Develop a DeFi lending platform with staking and borrowing features.
+    Build a cross-chain NFT marketplace using a layer-2 solution.
+
+Certificate Course:
+
+    "Certified Blockchain Expert (CBE)" (Blockchain Council)
+    "Chainlink Developer Certification" (Chainlink)
+
+Learning Resources:
+
+    "Ethereum Development with Go" (https://goethereumbook.org/)
+    "The DeFi Handbook" by Two Prime

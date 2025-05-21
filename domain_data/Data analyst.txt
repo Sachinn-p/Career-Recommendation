@@ -1,0 +1,121 @@
+Below is a structured roadmap for the domain Data Analyst, tailored for Beginner, Intermediate, and Advanced levels, following the format of the Machine Learning document you provided.
+<DOCUMENT>
+Domain: Data Analyst
+Type: Beginner
+
+Courses:
+
+    "Data Analysis with Python" (Coursera)
+    "Excel to MySQL: Analytic Techniques for Business" (Coursera)
+
+Roadmap:
+
+    Learn the basics of spreadsheets (Excel or Google Sheets: formulas, pivot tables).
+    Understand foundational statistics (mean, median, variance, probability).
+    Get familiar with Python or R for data manipulation (e.g., Pandas, dplyr).
+    Explore data visualization tools like Tableau or Power BI.
+
+Docs:
+
+    Python Official Documentation (https://docs.python.org/)
+    Tableau Learning Resources (https://www.tableau.com/learn)
+
+Learning Platform:
+
+    Kaggle
+    DataCamp
+
+Projects Suggestion:
+
+    Analyze sales data to identify trends using Excel or Python.
+    Create a dashboard visualizing a public dataset (e.g., COVID-19 data).
+
+Certificate Course:
+
+    "Google Data Analytics Professional Certificate" (Coursera)
+    "Microsoft Certified: Data Analyst Associate"
+
+Learning Resources:
+
+    "Python for Data Analysis" by Wes McKinney
+    "Storytelling with Data" by Cole Nussbaumer Knaflic
+
+Domain: Data Analyst
+Type: Intermediate
+
+Courses:
+
+    "SQL for Data Science" (Coursera)
+    "Intermediate Data Visualization with Tableau" (Udemy)
+
+Roadmap:
+
+    Master SQL for querying databases (joins, subqueries, aggregations).
+    Deepen knowledge of statistical methods (hypothesis testing, correlation).
+    Build advanced visualizations (interactive dashboards, geospatial analysis).
+    Learn data cleaning and preprocessing techniques with Python or R.
+
+Docs:
+
+    SQL Documentation (https://dev.mysql.com/doc/)
+    Pandas Documentation (https://pandas.pydata.org/docs/)
+
+Learning Platform:
+
+    Mode Analytics
+    Databricks Community Edition
+
+Projects Suggestion:
+
+    Query and analyze a large dataset (e.g., e-commerce transactions) using SQL.
+    Build an interactive dashboard tracking business KPIs with Tableau.
+
+Certificate Course:
+
+    "IBM Data Analyst Professional Certificate" (Coursera)
+    "Data Visualization with Tableau Specialization" (Coursera)
+
+Learning Resources:
+
+    "Practical Statistics for Data Scientists" by Peter Bruce, Andrew Bruce, and Peter Gedeck
+    "The Visual Display of Quantitative Information" by Edward Tufte
+
+Domain: Data Analyst
+Type: Advanced
+
+Courses:
+
+    "Advanced Data Analysis with Python" (Udemy)
+    "Big Data Analytics with Hadoop and Spark" (Coursera)
+
+Roadmap:
+
+    Master advanced analytics techniques (time series analysis, regression modeling).
+    Work with big data tools like Hadoop, Spark, or Snowflake.
+    Learn to integrate APIs and automate data pipelines.
+    Focus on business storytelling and presenting insights to stakeholders.
+
+Docs:
+
+    Apache Spark Documentation (https://spark.apache.org/docs/)
+    Snowflake Documentation (https://docs.snowflake.com/)
+
+Learning Platform:
+
+    Google BigQuery
+    AWS Data Pipeline
+
+Projects Suggestion:
+
+    Build a predictive model for customer churn using Python and Spark.
+    Create an automated pipeline to process and visualize real-time data (e.g., stock prices).
+
+Certificate Course:
+
+    "Data Analyst Nanodegree" (Udacity)
+    "AWS Certified Data Analytics – Specialty"
+
+Learning Resources:
+
+    "Data Science for Business" by Foster Provost and Tom Fawcett
+    "Big Data: A Revolution That Will Transform How We Live, Work, and Think" by Viktor Mayer-Schönberger and Kenneth Cukier

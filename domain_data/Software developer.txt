@@ -1,0 +1,105 @@
+Domain: Software Development
+Type: Beginner
+
+Courses:
+- "CS50: Introduction to Computer Science" (Harvard, edX)
+- "Python for Everybody" (University of Michigan, Coursera)
+
+Roadmap:
+1. Learn programming fundamentals (variables, loops, functions, OOP).
+2. Understand data structures and algorithms.
+3. Get familiar with Git and version control.
+4. Explore basic problem-solving with competitive programming.
+5. Work on small coding projects using Python or JavaScript.
+
+Docs:
+- Python Documentation (https://docs.python.org/)
+- GitHub Docs (https://docs.github.com/)
+
+Learning Platform:
+- LeetCode
+- HackerRank
+
+Projects Suggestion:
+1. Develop a simple calculator application.
+2. Create a basic command-line to-do list manager.
+
+Certificate Course:
+- "Google IT Automation with Python" (Coursera)
+- "AWS Certified Cloud Practitioner" (AWS)
+
+Learning Resources:
+- "Automate the Boring Stuff with Python" by Al Sweigart
+- "Eloquent JavaScript" by Marijn Haverbeke
+
+---
+
+Domain: Software Development
+Type: Intermediate
+
+Courses:
+- "Data Structures and Algorithms" (Udacity, Coursera)
+- "Object-Oriented Programming in Java" (Coursera)
+
+Roadmap:
+1. Deepen understanding of DSA (sorting, trees, graphs, dynamic programming).
+2. Learn database management (SQL, PostgreSQL, MongoDB).
+3. Get familiar with backend development (Node.js, Django, Flask).
+4. Explore API development and microservices architecture.
+5. Work on full-stack projects with deployment.
+
+Docs:
+- PostgreSQL Documentation (https://www.postgresql.org/docs/)
+- Flask Documentation (https://flask.palletsprojects.com/)
+
+Learning Platform:
+- CodeChef
+- GeeksforGeeks
+
+Projects Suggestion:
+1. Develop a blog application with user authentication.
+2. Build a REST API for a book inventory system.
+
+Certificate Course:
+- "IBM Full-Stack Cloud Developer" (Coursera)
+- "Microsoft Certified: Azure Developer Associate"
+
+Learning Resources:
+- "Clean Code" by Robert C. Martin
+- "The Algorithm Design Manual" by Steven Skiena
+
+---
+
+Domain: Software Development
+Type: Advanced
+
+Courses:
+- "Software Architecture & Design" (Udacity)
+- "Distributed Systems" (MIT OpenCourseWare)
+
+Roadmap:
+1. Master system design concepts (scalability, caching, load balancing).
+2. Learn cloud computing (AWS, Google Cloud, Azure).
+3. Explore containerization and orchestration (Docker, Kubernetes).
+4. Study DevOps practices and CI/CD automation.
+5. Work on scalable, high-performance applications.
+
+Docs:
+- Kubernetes Documentation (https://kubernetes.io/docs/)
+- AWS Docs (https://docs.aws.amazon.com/)
+
+Learning Platform:
+- System Design Primer (GitHub)
+- Cloud Academy
+
+Projects Suggestion:
+1. Build a scalable microservices-based e-commerce platform.
+2. Develop a real-time chat application with WebSockets and Redis.
+
+Certificate Course:
+- "Google Cloud Professional Cloud Architect" (Google)
+- "Certified Kubernetes Administrator (CKA)"
+
+Learning Resources:
+- "Designing Data-Intensive Applications" by Martin Kleppmann
+- "Site Reliability Engineering" by Google SRE Team

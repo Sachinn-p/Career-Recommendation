@@ -1,0 +1,105 @@
+Domain: User Interface (UI) and User Experience (UX) Design
+Type: Beginner
+
+Courses:
+- "Introduction to UI/UX Design" (Coursera)
+- "UI/UX Design Specialization" (Google, Coursera)
+
+Roadmap:
+1. Understand the fundamentals of UI and UX design.
+2. Learn design principles, typography, and color theory.
+3. Get familiar with design tools like Figma, Adobe XD, or Sketch.
+4. Explore wireframing and prototyping techniques.
+5. Conduct basic user research and usability testing.
+
+Docs:
+- Nielsen Norman Group UX Articles (https://www.nngroup.com/articles/)
+- Figma Help Center (https://help.figma.com/)
+
+Learning Platform:
+- Behance
+- Dribbble
+
+Projects Suggestion:
+1. Redesign a landing page for a popular website.
+2. Create a mobile app prototype for a to-do list application.
+
+Certificate Course:
+- "Google UX Design Professional Certificate" (Google, Coursera)
+- "Adobe Certified Professional in UX Design" (Adobe)
+
+Learning Resources:
+- "Don't Make Me Think" by Steve Krug
+- "The Design of Everyday Things" by Don Norman
+
+---
+
+Domain: User Interface (UI) and User Experience (UX) Design
+Type: Intermediate
+
+Courses:
+- "Advanced UX Design Techniques" (LinkedIn Learning)
+- "Human-Computer Interaction" (Coursera, University of California)
+
+Roadmap:
+1. Learn advanced user research methods and usability testing techniques.
+2. Understand interaction design and micro-interactions.
+3. Study accessibility standards and inclusive design.
+4. Explore UI animation and motion design.
+5. Learn about design systems and component libraries.
+
+Docs:
+- Material Design Guidelines (https://material.io/design/)
+- Apple Human Interface Guidelines (https://developer.apple.com/design/human-interface-guidelines/)
+
+Learning Platform:
+- UX Collective
+- Smashing Magazine
+
+Projects Suggestion:
+1. Develop a design system for a web application.
+2. Create an interactive prototype for an e-commerce checkout process.
+
+Certificate Course:
+- "Interaction Design Specialization" (Coursera, University of California)
+- "Certified Usability Analyst (CUA)" (Human Factors International)
+
+Learning Resources:
+- "Laws of UX" by Jon Yablonski
+- "Hooked: How to Build Habit-Forming Products" by Nir Eyal
+
+---
+
+Domain: User Interface (UI) and User Experience (UX) Design
+Type: Advanced
+
+Courses:
+- "UX Strategy: How to Design Innovative Digital Products" (Udemy)
+- "Service Design and UX Research" (Interaction Design Foundation)
+
+Roadmap:
+1. Master UX strategy and business-driven design approaches.
+2. Learn about behavioral psychology and cognitive biases in UX.
+3. Explore voice UI, AR/VR design, and emerging design trends.
+4. Understand cross-platform design and omnichannel experiences.
+5. Stay updated with research papers in UX and HCI conferences.
+
+Docs:
+- Nielsen Norman Group Research Reports (https://www.nngroup.com/reports/)
+- Interaction Design Foundation Articles (https://www.interaction-design.org/)
+
+Learning Platform:
+- UX Research Conferences
+- Design Twitter and Medium Blogs
+
+Projects Suggestion:
+1. Design a voice assistant interface for a smart home system.
+2. Develop a UX research study on user engagement in mobile apps.
+
+Certificate Course:
+- "UX Master Certification" (Nielsen Norman Group)
+- "HFI Certified UX Designer" (Human Factors International)
+
+Learning Resources:
+- "100 Things Every Designer Needs to Know About People" by Susan Weinschenk
+- "Lean UX: Applying Lean Principles to Improve User Experience" by Jeff Gothelf

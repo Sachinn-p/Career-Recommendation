@@ -4,12 +4,12 @@ import logging
 import json
 from typing import Dict, List, Any, Optional
 from datetime import datetime
-from langchain_google_vertexai import ChatVertexAI
-from langchain_core.prompts import PromptTemplate
-from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
-from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationChain
+import requests
+from bs4 import BeautifulSoup
+import random
+import google.generativeai as genai
+from google.generativeai.types import content_types
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -57,6 +57,15 @@ class CareerPath(BaseModel):
     industry_demand: str = Field(default="")
     typical_job_titles: List[str] = Field(default_factory=list)
 
+class JobListing(BaseModel):
+    job_title: str = Field(default="")
+    company: str = Field(default="")
+    location: str = Field(default="")
+    platform: str = Field(default="")
+    link: str = Field(default="")
+    posted_date: str = Field(default="")
+    description: str = Field(default="")
+
 class CareerGuidance(BaseModel):
     domain_overview: str = Field(default="")
     current_industry_trends: List[str] = Field(default_factory=list)
@@ -70,7 +79,7 @@ class CareerGuidance(BaseModel):
     industry_resources: List[str] = Field(default_factory=list)
 
 class DomainKnowledgeBase:
-    def __init__(self, domains_dir: str = "domains"):
+    def __init__(self, domains_dir: str = "domain_data"):
         self.domains = {}
         self._load_domains(domains_dir)
 
@@ -144,7 +153,7 @@ Key Companies:
 - Meta
 - Apple"""
         
-        with open(os.path.join(domains_dir, "software_development.txt"), "w") as f:
+        with open(os.path.join(domains_dir, "Domain Machine Learning.txt"), "w") as f:
             f.write(sample_content)
 
     def _parse_domain_content(self, content: str) -> Dict[str, Any]:
@@ -191,55 +200,88 @@ Key Companies:
             "key_companies": ["Tech Companies"]
         }
 
+class JobFetcher:
+    def __init__(self):
+        self.platforms = {
+            "LinkedIn": "https://www.linkedin.com/jobs/search/?keywords={domain}",
+            "Glassdoor": "https://www.glassdoor.com/Job/jobs.htm?sc.keyword={domain}",
+            "Internshala": "https://internshala.com/jobs/keyword-{domain}",
+            "Indeed": "https://www.indeed.com/jobs?q={domain}",
+            "Naukri": "https://www.naukri.com/{domain}-jobs"
+        }
+        self.headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+
+    def fetch_jobs(self, domain: str) -> List[JobListing]:
+        jobs = []
+        for platform, url_template in self.platforms.items():
+            try:
+                # Replace spaces with appropriate URL encoding or platform-specific separator
+                query = domain.replace(" ", "%20") if platform != "Naukri" else domain.replace(" ", "-")
+                url = url_template.format(domain=query)
+                response = requests.get(url, headers=self.headers, timeout=10)
+                response.raise_for_status()
+                
+                # Basic scraping logic (simplified; real implementation would vary by site)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                job_elements = soup.select('.job-listing, .job-card, .job-result')[:3]  # Limiting to 3 for demo
+                
+                for job in job_elements:
+                    title = job.find(class_=['job-title', 'title']) or job.find('a')
+                    company = job.find(class_=['company', 'employer'])
+                    location = job.find(class_=['location', 'job-location'])
+                    
+                    jobs.append(JobListing(
+                        job_title=title.get_text(strip=True) if title else f"{domain} Job",
+                        company=company.get_text(strip=True) if company else "Unknown Company",
+                        location=location.get_text(strip=True) if location else "Remote/Unknown",
+                        platform=platform,
+                        link=title['href'] if title and title.get('href') else url,
+                        posted_date="Recent",  # Simplified; real data would need specific parsing
+                        description="Visit the link for more details"
+                    ))
+            except Exception as e:
+                logger.error(f"Error fetching jobs from {platform}: {e}")
+                # Fallback to mock data
+                jobs.extend(self._generate_mock_jobs(domain, platform))
+        
+        return jobs[:5]  # Limit to 5 jobs for display
+
+    def _generate_mock_jobs(self, domain: str, platform: str) -> List[JobListing]:
+        companies = ["TechCorp", "Innovate Ltd", "Future Systems", "Global Tech", "NextGen"]
+        locations = ["Remote", "Bangalore, India", "San Francisco, CA", "London, UK", "Hybrid"]
+        return [
+            JobListing(
+                job_title=f"{domain} {random.choice(['Developer', 'Engineer', 'Intern', 'Analyst'])}",
+                company=random.choice(companies),
+                location=random.choice(locations),
+                platform=platform,
+                link=self.platforms[platform].format(domain=domain.replace(" ", "-")),
+                posted_date="Recent",
+                description=f"Exciting opportunity in {domain} with {platform}"
+            )
+            for _ in range(2)
+        ]
+
 class CareerRecommendationSystem:
-    def __init__(self, service_account_file: str, project_id: str, location: str = "us-central1"):
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_file
-        os.environ["GOOGLE_CLOUD_PROJECT"] = project_id
+    def __init__(self, api_key: str):
+        # Configure the Gemini API with the provided key
+        genai.configure(api_key=api_key)
         
-        self.llm = ChatVertexAI(
-            model_name="gemini-1.5-pro-preview-0409",
-            temperature=0.7,
-            max_output_tokens=2048,
-            project=project_id,
-            location=location
+        # Initialize the model
+        self.model = genai.GenerativeModel(
+            model_name="gemini-1.5-pro",
+            generation_config={
+                "temperature": 0.2,
+                "max_output_tokens": 2048,
+                "top_p": 0.95,
+                "top_k": 64,
+            }
         )
         
-        self.memory = ConversationBufferMemory()
-        self.output_parser = PydanticOutputParser(pydantic_object=CareerGuidance)
-        
-        self.guidance_prompt = PromptTemplate(
-            template="""
-            please make a detail career development plan for a {level} professional in the {domain} domain.
-            You are a senior career counselor and industry expert. The domain is: {domain}
-            Focus on beginner-level professionals and all level professionals in this domain.
-            Create a comprehensive career development plan for a {level} professional in this domain.
-            Domain Knowledge Context:
-            Description: {domain_description}
-            Core Skills: {core_skills}
-            Specializations: {specializations}
-            Tools & Technologies: {tools_and_technologies}
-            Industry Standards: {industry_standards}
-            
-            Create a comprehensive career development plan for a {level} professional in this domain.
-            Consider:
-            1. Current industry state and emerging trends
-            2. Essential skills and technologies needed at this level
-            3. Detailed course recommendations with actual platforms and courses
-            4. Practical projects that demonstrate real-world competency
-            5. Career progression paths with current market insights
-            6. Industry-recognized certifications
-            7. Domain-specific interview preparation
-            
-            The response must follow this exact format:
-            {format_instructions}
-            
-            Make all recommendations highly specific to {domain} and {level} level.
-            Include actual course names, specific project details, and realistic salary ranges.
-            """,
-            input_variables=["domain", "level", "domain_description", "core_skills", 
-                           "specializations", "tools_and_technologies", "industry_standards"],
-            partial_variables={"format_instructions": self.output_parser.get_format_instructions()}
-        )
+        self.job_fetcher = JobFetcher()
+        self.chat_history = []
 
     def ask_domain_question(self, domain: str, query: str) -> str:
         try:
@@ -248,33 +290,141 @@ class CareerRecommendationSystem:
             
             Focus on practical advice and specific next steps the person can take."""
             
-            response = self.llm.invoke(prompt).content
-            return response
+            response = self.model.generate_content(prompt)
+            return response.text
         except Exception as e:
             logger.error(f"Query processing error: {str(e)}")
             return f"Error processing query: {str(e)}"
 
     def generate_career_guidance(self, domain: str, level: str, domain_knowledge: Dict[str, Any]) -> CareerGuidance:
         try:
-            prompt = self.guidance_prompt.format(
-                domain=domain,
-                level=level,
-                domain_description=domain_knowledge.get('description', ''),
-                core_skills=', '.join(domain_knowledge.get('core_skills', [])),
-                specializations=', '.join(domain_knowledge.get('specializations', [])),
-                tools_and_technologies=', '.join(domain_knowledge.get('tools_and_technologies', [])),
-                industry_standards=', '.join(domain_knowledge.get('industry_standards', []))
-            )
+            prompt = self._create_guidance_prompt(domain, level, domain_knowledge)
             
-            response = self.llm.invoke(prompt)
-            return self.output_parser.parse(response.content)
+            response = self.model.generate_content(prompt)
+            if response.text:
+                # Try to parse the JSON structure from the response
+                parsed_data = self._extract_json_from_response(response.text)
+                return CareerGuidance(**parsed_data)
+            else:
+                logger.error("Received empty response from LLM")
+                return self._generate_fallback_guidance(domain, level, domain_knowledge)
             
         except Exception as e:
             logger.error(f"Error generating guidance: {e}")
             return self._generate_fallback_guidance(domain, level, domain_knowledge)
 
+    def _create_guidance_prompt(self, domain: str, level: str, domain_knowledge: Dict[str, Any]) -> str:
+        return f"""
+        You are a senior career counselor and industry expert. The domain is: {domain}
+        Focus on beginner-level professionals and all level professionals in this domain.
+        Create a comprehensive career development plan for a {level} professional in this domain.
+        
+        Domain Knowledge Context:
+        Description: {domain_knowledge.get('description', '')}
+        Core Skills: {', '.join(domain_knowledge.get('core_skills', []))}
+        Specializations: {', '.join(domain_knowledge.get('specializations', []))}
+        Tools & Technologies: {', '.join(domain_knowledge.get('tools_and_technologies', []))}
+        Industry Standards: {', '.join(domain_knowledge.get('industry_standards', []))}
+        
+        Create a comprehensive career development plan for a {level} professional in this domain.
+        Consider:
+        1. Current industry state and emerging trends
+        2. Essential skills and technologies needed at this level
+        3. Detailed course recommendations with actual platforms and courses
+        4. Practical projects that demonstrate real-world competency
+        5. Career progression paths with current market insights
+        6. Industry-recognized certifications
+        7. Domain-specific interview preparation
+        
+        Your response must be in valid JSON format with the following structure:
+        {{
+            "domain_overview": "String describing the domain overview",
+            "current_industry_trends": ["trend1", "trend2", ...],
+            "skill_roadmap": [
+                {{
+                    "skill_name": "Skill name",
+                    "importance_level": "Essential/Important/Helpful",
+                    "time_to_master": "Time period",
+                    "prerequisites": ["prerequisite1", "prerequisite2", ...],
+                    "resources": ["resource1", "resource2", ...],
+                    "industry_applications": ["application1", "application2", ...],
+                    "proficiency_metrics": ["metric1", "metric2", ...]
+                }}
+            ],
+            "recommended_courses": [
+                {{
+                    "course_name": "Course name",
+                    "platform": "Platform name",
+                    "link": "Course URL",
+                    "duration": "Course duration",
+                    "difficulty_level": "Beginner/Intermediate/Advanced",
+                    "prerequisites": ["prerequisite1", "prerequisite2", ...],
+                    "key_topics": ["topic1", "topic2", ...],
+                    "certification": true/false,
+                    "price": "Price information"
+                }}
+            ],
+            "project_suggestions": [
+                {{
+                    "title": "Project title",
+                    "description": "Project description",
+                    "skills_practiced": ["skill1", "skill2", ...],
+                    "difficulty_level": "Beginner/Intermediate/Advanced",
+                    "estimated_duration": "Time period",
+                    "resources_needed": ["resource1", "resource2", ...],
+                    "learning_outcomes": ["outcome1", "outcome2", ...],
+                    "implementation_steps": ["step1", "step2", ...]
+                }}
+            ],
+            "career_growth_paths": [
+                {{
+                    "title": "Career path title",
+                    "description": "Career path description",
+                    "salary_range": "Salary range",
+                    "required_experience": "Required experience",
+                    "key_responsibilities": ["responsibility1", "responsibility2", ...],
+                    "required_skills": ["skill1", "skill2", ...],
+                    "growth_opportunities": ["opportunity1", "opportunity2", ...],
+                    "industry_demand": "High/Medium/Low",
+                    "typical_job_titles": ["title1", "title2", ...]
+                }}
+            ],
+            "certifications_needed": ["certification1", "certification2", ...],
+            "networking_suggestions": ["suggestion1", "suggestion2", ...],
+            "interview_preparation": ["tip1", "tip2", ...],
+            "industry_resources": ["resource1", "resource2", ...]
+        }}
+        
+        Make all recommendations highly specific to {domain} and {level} level.
+        Include actual course names, specific project details, and realistic salary ranges.
+        IMPORTANT: Respond with ONLY the JSON object, no other text.
+        """
+
+    def _extract_json_from_response(self, response_text: str) -> Dict[str, Any]:
+        """Extract JSON data from the response text, handling potential formatting issues"""
+        try:
+            # First try to parse the whole response as JSON
+            return json.loads(response_text)
+        except json.JSONDecodeError:
+            # If that fails, try to extract just the JSON part
+            try:
+                # Look for JSON between curly braces
+                json_start = response_text.find('{')
+                json_end = response_text.rfind('}') + 1
+                
+                if json_start >= 0 and json_end > json_start:
+                    json_str = response_text[json_start:json_end]
+                    return json.loads(json_str)
+                else:
+                    raise ValueError("Could not find JSON object in response")
+            except Exception as e:
+                logger.error(f"Error extracting JSON: {e}")
+                raise
+
+    def fetch_recent_jobs(self, domain: str) -> List[JobListing]:
+        return self.job_fetcher.fetch_jobs(domain)
+
     def _generate_fallback_guidance(self, domain: str, level: str, domain_knowledge: Dict[str, Any]) -> CareerGuidance:
-        """Generate a basic but informative fallback response using domain knowledge."""
         return CareerGuidance(
             domain_overview=domain_knowledge.get('description', f'Overview of {domain}'),
             current_industry_trends=domain_knowledge.get('industry_standards', []),
@@ -344,53 +494,34 @@ class CareerRecommendationSystem:
             ]
         )
 
-import streamlit as st
-import logging
-from typing import List, Dict, Optional
-
-# Configure logging
-logging.basicConfig(level=logging.ERROR)
-logger = logging.getLogger(__name__)
-
 class StreamlitCareerApp:
     def __init__(self):
         st.set_page_config(page_title="Career Guide Pro", page_icon="🚀", layout="wide")
-        self.knowledge_base = DomainKnowledgeBase()  # Assuming this class exists
+        self.knowledge_base = DomainKnowledgeBase()
         if 'career_system' not in st.session_state:
             st.session_state.career_system = None
 
-    def initialize_system(self, service_account_file, project_id: str) -> None:
-        """Initialize the career recommendation system."""
+    def initialize_system(self, api_key: str) -> None:
         try:
-            with open('service_account.json', 'wb') as f:
-                f.write(service_account_file.getvalue())
-            
-            career_system = CareerRecommendationSystem(  # Assuming this class exists
-                service_account_file='service_account.json',
-                project_id=project_id
-            )
+            career_system = CareerRecommendationSystem(api_key=api_key)
             st.session_state.career_system = career_system
             st.success("✅ Career Guidance System Successfully Initialized!")
         except Exception as e:
             st.error(f"❌ Initialization failed: {e}")
             logger.error(f"Initialization error: {str(e)}")
 
-    def display_guidance(self, guidance: 'CareerGuidance') -> None:  # Using string literal for forward reference
-        """Display career guidance information in an organized layout."""
+    def display_guidance(self, guidance: CareerGuidance) -> None:
         st.header("📊 Career Guidance Results")
         
-        # Overview Section
         with st.expander("🌐 Domain Overview & Industry Trends", expanded=True):
             st.markdown("### Domain Overview")
             st.markdown(guidance.domain_overview)
-            
             st.markdown("### Current Industry Trends")
             for trend in guidance.current_industry_trends:
                 st.markdown(f"- {trend}")
 
-        # Skills Section
         with st.expander("🎯 Skill Roadmap", expanded=True):
-            if guidance.skill_roadmap:  # Add null check
+            if guidance.skill_roadmap:
                 for skill in guidance.skill_roadmap:
                     st.markdown(f"### {skill.skill_name}")
                     col1, col2 = st.columns(2)
@@ -413,9 +544,8 @@ class StreamlitCareerApp:
                         for metric in skill.proficiency_metrics:
                             st.markdown(f"- {metric}")
 
-        # Courses Section
         with st.expander("📚 Recommended Courses", expanded=True):
-            if guidance.recommended_courses:  # Add null check
+            if guidance.recommended_courses:
                 for course in guidance.recommended_courses:
                     st.markdown(f"### {course.course_name}")
                     col1, col2, col3 = st.columns(3)
@@ -434,19 +564,13 @@ class StreamlitCareerApp:
                         st.markdown("**Key Topics:**")
                         st.markdown(", ".join(course.key_topics))
 
-        # Projects Section
         self._display_projects_section(guidance)
-        
-        # Career Paths Section
         self._display_career_paths_section(guidance)
-        
-        # Additional Resources Section
         self._display_resources_section(guidance)
 
-    def _display_projects_section(self, guidance: 'CareerGuidance') -> None:
-        """Display project suggestions in a separate method for better organization."""
+    def _display_projects_section(self, guidance: CareerGuidance) -> None:
         with st.expander("💻 Project Suggestions", expanded=True):
-            if guidance.project_suggestions:  # Add null check
+            if guidance.project_suggestions:
                 for project in guidance.project_suggestions:
                     st.markdown(f"### {project.title}")
                     st.markdown(project.description)
@@ -464,10 +588,9 @@ class StreamlitCareerApp:
                         for idx, step in enumerate(project.implementation_steps, 1):
                             st.markdown(f"{idx}. {step}")
 
-    def _display_career_paths_section(self, guidance: 'CareerGuidance') -> None:
-        """Display career growth paths in a separate method."""
+    def _display_career_paths_section(self, guidance: CareerGuidance) -> None:
         with st.expander("🚀 Career Growth Paths", expanded=True):
-            if guidance.career_growth_paths:  # Add null check
+            if guidance.career_growth_paths:
                 for path in guidance.career_growth_paths:
                     st.markdown(f"### {path.title}")
                     st.markdown(path.description)
@@ -485,7 +608,6 @@ class StreamlitCareerApp:
                     self._display_path_details(path)
 
     def _display_path_details(self, path) -> None:
-        """Display detailed information for each career path."""
         if path.key_responsibilities:
             st.markdown("**Key Responsibilities:**")
             for resp in path.key_responsibilities:
@@ -496,8 +618,7 @@ class StreamlitCareerApp:
             for opp in path.growth_opportunities:
                 st.markdown(f"- {opp}")
 
-    def _display_resources_section(self, guidance: 'CareerGuidance') -> None:
-        """Display additional resources in a separate method."""
+    def _display_resources_section(self, guidance: CareerGuidance) -> None:
         with st.expander("🎓 Additional Resources", expanded=True):
             col1, col2 = st.columns(2)
             with col1:
@@ -522,34 +643,74 @@ class StreamlitCareerApp:
                     for resource in guidance.industry_resources:
                         st.markdown(f"- {resource}")
 
+    def display_jobs(self, jobs: List[JobListing]) -> None:
+        with st.expander("🔍 Recent Job Suggestions", expanded=True):
+            if jobs:
+                for job in jobs:
+                    st.markdown(f"### {job.job_title}")
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.markdown(f"**Company:** {job.company}")
+                        st.markdown(f"**Location:** {job.location}")
+                    with col2:
+                        st.markdown(f"**Platform:** {job.platform}")
+                        st.markdown(f"**Posted:** {job.posted_date}")
+                    st.markdown(f"[Apply Here]({job.link})")
+                    st.markdown(f"**Description:** {job.description}")
+                    st.markdown("---")
+            else:
+                st.markdown("No recent jobs found for this domain.")
+
     def run(self) -> None:
-        """Run the Streamlit application."""
         st.title("🚀 Domain Career Guidance")
 
         self._setup_sidebar()
         self._handle_main_content()
 
     def _setup_sidebar(self) -> None:
-        """Setup the sidebar configuration."""
         with st.sidebar:
             st.header("System Configuration")
-            service_account = st.file_uploader("Upload Service Account JSON", type=['json'])
-            project_id = st.text_input("Google Cloud Project ID")
-
-            if st.button("Initialize System") and service_account and project_id:
-                self.initialize_system(service_account, project_id)
+            
+            # Use a password field for the API key for security
+            api_key = st.text_input("Gemini API Key", type="password", 
+                                    help="Get your API key from: https://makersuite.google.com/app/apikey")
+            
+            if st.button("Initialize System") and api_key:
+                self.initialize_system(api_key)
+                
+            # st.markdown("---")
+            # st.markdown("### About")
+            # st.markdown("""
+            # Career Guide Pro uses Google's Gemini AI to provide personalized 
+            # career guidance and recommendations.
+            
+            # Simply enter your Gemini API key to get started!
+            # """)
 
     def _handle_main_content(self) -> None:
-        """Handle the main content area of the application."""
         if st.session_state.career_system:
             st.subheader("Career Development Plan Generator")
             
             domain, level = self._get_user_selections()
             self._handle_guidance_generation(domain, level)
+            self._handle_job_suggestions(domain)
             self._handle_qa_section(domain)
+        else:
+            st.info("👈 Please enter your Gemini API key in the sidebar to get started!")
+        #     st.markdown("""
+        #     ### Welcome to Career Guide Pro!
+            
+        #     This tool helps you:
+        #     - Get personalized career guidance based on your domain and experience level
+        #     - Find relevant job listings
+        #     - Get answers to specific career questions
+        #     - Develop a structured learning path
+            
+        #     To get started, you'll need a Gemini API key from Google. 
+        #     You can get one for free at [Google AI Studio](https://makersuite.google.com/app/apikey).
+        #     """)
 
     def _get_user_selections(self) -> tuple[str, str]:
-        """Get user selections for domain and level."""
         col1, col2 = st.columns(2)
         with col1:
             available_domains = list(self.knowledge_base.domains.keys())
@@ -560,7 +721,6 @@ class StreamlitCareerApp:
         return domain, level
 
     def _handle_guidance_generation(self, domain: str, level: str) -> None:
-        """Handle the generation of career guidance."""
         if st.button("Generate Career Guidance", type="primary"):
             with st.spinner("🔄 Generating your personalized career guidance..."):
                 try:
@@ -573,8 +733,17 @@ class StreamlitCareerApp:
                     st.error(f"❌ Error generating guidance: {e}")
                     logger.error(f"Guidance generation error: {str(e)}")
 
+    def _handle_job_suggestions(self, domain: str) -> None:
+        if st.button("Job Suggestions", type="secondary"):
+            with st.spinner("🔍 Fetching recent job listings..."):
+                try:
+                    jobs = st.session_state.career_system.fetch_recent_jobs(domain)
+                    self.display_jobs(jobs)
+                except Exception as e:
+                    st.error(f"❌ Error fetching jobs: {e}")
+                    logger.error(f"Job fetching error: {str(e)}")
+
     def _handle_qa_section(self, domain: str) -> None:
-        """Handle the Q&A section of the application."""
         st.subheader("❓ Ask About Your Career")
         user_query = st.text_input("Have a specific question about your career path?")
         

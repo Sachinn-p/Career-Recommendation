@@ -1,0 +1,119 @@
+Domain: Cloud Engineer
+Type: Beginner
+
+Courses:
+
+    "Introduction to Cloud Computing" (Coursera)
+    "AWS Cloud Practitioner Essentials" (AWS Training)
+
+Roadmap:
+
+    Learn the basics of cloud computing (IaaS, PaaS, SaaS).
+    Understand core networking concepts (VPC, subnets, DNS).
+    Get hands-on with a cloud provider (AWS, Azure, or GCP) for basic services (e.g., EC2, Blob Storage).
+    Explore scripting with Python or Bash for automation.
+
+Docs:
+
+    AWS Documentation (https://docs.aws.amazon.com/)
+    Microsoft Azure Documentation (https://docs.microsoft.com/en-us/azure/)
+
+Learning Platform:
+
+    Qwiklabs
+    A Cloud Guru
+
+Projects Suggestion:
+
+    Deploy a static website using AWS S3 or Azure Blob Storage.
+    Set up a virtual machine (e.g., AWS EC2) and secure it with basic firewall rules.
+
+Certificate Course:
+
+    "AWS Certified Cloud Practitioner"
+    "Microsoft Azure Fundamentals (AZ-900)"
+
+Learning Resources:
+
+    "Cloud Computing Basics" by T. B. Rehman
+    "AWS: The Complete Beginner’s Guide" by Stephen Baron
+
+Domain: Cloud Engineer
+Type: Intermediate
+
+Courses:
+
+    "Architecting with Google Cloud Platform" (Coursera)
+    "AWS Solutions Architect Associate" (Udemy)
+
+Roadmap:
+
+    Master cloud architecture principles (scalability, high availability).
+    Learn Infrastructure as Code (IaC) with Terraform or CloudFormation.
+    Dive into containerization with Docker and orchestration with Kubernetes.
+    Implement monitoring and logging (e.g., CloudWatch, Stackdriver).
+
+Docs:
+
+    Google Cloud Documentation (https://cloud.google.com/docs)
+    Terraform Documentation (https://www.terraform.io/docs)
+
+Learning Platform:
+
+    Pluralsight
+    Linux Academy
+
+Projects Suggestion:
+
+    Build a multi-tier application using AWS ECS or GCP Cloud Run.
+    Automate infrastructure deployment with Terraform on Azure.
+
+Certificate Course:
+
+    "AWS Certified Solutions Architect – Associate"
+    "Google Cloud Associate Cloud Engineer"
+
+Learning Resources:
+
+    "Infrastructure as Code" by Kief Morris
+    "Kubernetes Up and Running" by Kelsey Hightower, Brendan Burns, and Joe Beda
+
+Domain: Cloud Engineer
+Type: Advanced
+
+Courses:
+
+    "Advanced AWS Well-Architected Framework" (Udemy)
+    "Designing Microsoft Azure Infrastructure Solutions" (Coursera)
+
+Roadmap:
+
+    Master advanced cloud security (IAM, encryption, compliance).
+    Learn serverless architectures (e.g., AWS Lambda, Azure Functions).
+    Optimize cloud costs and performance (e.g., auto-scaling, reserved instances).
+    Stay updated with hybrid/multi-cloud strategies and cloud-native trends.
+
+Docs:
+
+    AWS Well-Architected Framework (https://aws.amazon.com/architecture/well-architected/)
+    Kubernetes Documentation (https://kubernetes.io/docs/)
+
+Learning Platform:
+
+    Cloud Academy
+    CNCF Training (Cloud Native Computing Foundation)
+
+Projects Suggestion:
+
+    Design a serverless application with event-driven architecture (e.g., AWS Step Functions).
+    Implement a disaster recovery solution across multiple cloud regions.
+
+Certificate Course:
+
+    "AWS Certified Solutions Architect – Professional"
+    "Microsoft Certified: Azure Solutions Architect Expert (AZ-305)"
+
+Learning Resources:
+
+    "Cloud Native DevOps with Kubernetes" by John Arundel and Justin Domingus
+    "The Art of Cloud Security" by Michael W. Lucas

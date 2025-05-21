@@ -1,0 +1,121 @@
+Below is a structured roadmap for the domain Cybersecurity, tailored for Beginner, Intermediate, and Advanced levels, following the format of the previous documents.
+<DOCUMENT>
+Domain: Cybersecurity
+Type: Beginner
+
+Courses:
+
+    "Introduction to Cybersecurity" (Cisco Networking Academy)
+    "Cybersecurity Fundamentals" (Udemy)
+
+Roadmap:
+
+    Learn the basics of networking (TCP/IP, DNS, OSI model).
+    Understand core cybersecurity concepts (threats, vulnerabilities, encryption).
+    Get familiar with operating systems (Linux and Windows basics).
+    Explore tools like Wireshark for network analysis.
+
+Docs:
+
+    Linux Documentation (https://www.kernel.org/doc/html/latest/)
+    NIST Cybersecurity Framework (https://www.nist.gov/cyberframework)
+
+Learning Platform:
+
+    TryHackMe
+    Hack The Box (Beginner Rooms)
+
+Projects Suggestion:
+
+    Set up a simple firewall using pfSense or Windows Defender.
+    Analyze network traffic with Wireshark to identify suspicious activity.
+
+Certificate Course:
+
+    "CompTIA Security+" (CompTIA)
+    "Google Cybersecurity Certificate" (Coursera)
+
+Learning Resources:
+
+    "The Basics of Hacking and Penetration Testing" by Patrick Engebretson
+    "Cybersecurity Ops with bash" by Paul Troncone and Carl Albing
+
+Domain: Cybersecurity
+Type: Intermediate
+
+Courses:
+
+    "Ethical Hacking and Penetration Testing" (Udemy)
+    "Network Security Specialization" (Coursera)
+
+Roadmap:
+
+    Master penetration testing basics (Kali Linux, Metasploit).
+    Learn about web application security (SQL injection, XSS).
+    Study cryptography in-depth (symmetric/asymmetric encryption, hashing).
+    Practice securing systems with tools like Nessus or OpenVAS.
+
+Docs:
+
+    OWASP Top Ten (https://owasp.org/www-project-top-ten/)
+    Kali Linux Documentation (https://www.kali.org/docs/)
+
+Learning Platform:
+
+    Cybrary
+    Offensive Security (PWK Prep)
+
+Projects Suggestion:
+
+    Perform a vulnerability assessment on a test web app (e.g., DVWA).
+    Simulate a phishing attack and analyze its impact in a controlled environment.
+
+Certificate Course:
+
+    "Certified Ethical Hacker (CEH)" (EC-Council)
+    "CompTIA PenTest+"
+
+Learning Resources:
+
+    "Hacking: The Art of Exploitation" by Jon Erickson
+    "Web Application Security" by Andrew Hoffman
+
+Domain: Cybersecurity
+Type: Advanced
+
+Courses:
+
+    "Advanced Penetration Testing" (Udemy)
+    "Cybersecurity and Artificial Intelligence" (Coursera)
+
+Roadmap:
+
+    Master advanced exploitation techniques (buffer overflows, privilege escalation).
+    Learn about incident response and digital forensics (e.g., Autopsy, FTK).
+    Explore cloud security (AWS, Azure) and securing IoT devices.
+    Stay updated with zero-day vulnerabilities and threat intelligence.
+
+Docs:
+
+    MITRE ATT&CK Framework (https://attack.mitre.org/)
+    SANS Incident Response Guide (https://www.sans.org/white-papers/)
+
+Learning Platform:
+
+    Hack The Box (Advanced Labs)
+    Bugcrowd (Bug Bounty Programs)
+
+Projects Suggestion:
+
+    Build an intrusion detection system (IDS) using Snort or Suricata.
+    Conduct a red team exercise on a simulated enterprise network.
+
+Certificate Course:
+
+    "Offensive Security Certified Professional (OSCP)" (Offensive Security)
+    "Certified Information Systems Security Professional (CISSP)" (ISC²)
+
+Learning Resources:
+
+    "Black Hat Python" by Justin Seitz
+    "The Web Application Hacker’s Handbook" by Dafydd Stuttard and Marcus Pinto

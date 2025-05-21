@@ -1,0 +1,105 @@
+Domain: Mobile App Development
+Type: Beginner
+
+Courses:
+- "Android App Development for Beginners" (Udemy)
+- "iOS App Development for Beginners" (Coursera)
+
+Roadmap:
+1. Learn programming languages (Java/Kotlin for Android, Swift for iOS).
+2. Understand mobile UI/UX design principles.
+3. Get familiar with version control (Git, GitHub).
+4. Explore development environments (Android Studio, Xcode).
+5. Build simple mobile apps and deploy them on emulators.
+
+Docs:
+- Android Developer Docs (https://developer.android.com/docs)
+- Apple Developer Docs (https://developer.apple.com/documentation/)
+
+Learning Platform:
+- Codecademy
+- FreeCodeCamp
+
+Projects Suggestion:
+1. Create a basic calculator app.
+2. Develop a simple to-do list application.
+
+Certificate Course:
+- "Google Associate Android Developer" (Google)
+- "iOS App Development with Swift" (Coursera)
+
+Learning Resources:
+- "Android Programming for Beginners" by John Horton
+- "iOS Programming: The Big Nerd Ranch Guide" by Christian Keur and Aaron Hillegass
+
+---
+
+Domain: Mobile App Development
+Type: Intermediate
+
+Courses:
+- "Kotlin for Android Developers" (Udacity)
+- "SwiftUI Essentials" (LinkedIn Learning)
+
+Roadmap:
+1. Learn advanced concepts in Kotlin and Swift.
+2. Explore cross-platform development (Flutter, React Native).
+3. Work with APIs, Firebase, and backend integration.
+4. Implement user authentication and data storage.
+5. Optimize app performance and handle debugging.
+
+Docs:
+- Flutter Documentation (https://docs.flutter.dev/)
+- React Native Documentation (https://reactnative.dev/docs/getting-started)
+
+Learning Platform:
+- The Odin Project
+- Udacity
+
+Projects Suggestion:
+1. Develop a weather app using an API.
+2. Create a fitness tracker with user authentication.
+
+Certificate Course:
+- "Google Professional Android Developer" (Google)
+- "Meta iOS Developer Professional Certificate" (Coursera)
+
+Learning Resources:
+- "Flutter in Action" by Eric Windmill
+- "Mastering Swift" by Jon Hoffman
+
+---
+
+Domain: Mobile App Development
+Type: Advanced
+
+Courses:
+- "Advanced Android Development" (Google Developers)
+- "iOS Architect: Scalable App Development" (Udemy)
+
+Roadmap:
+1. Master advanced architecture (MVVM, Clean Architecture).
+2. Learn about performance optimization, animations, and security.
+3. Explore cloud computing, serverless functions, and DevOps for mobile.
+4. Work on real-world applications with payment gateways and push notifications.
+5. Deploy apps to Google Play Store and Apple App Store.
+
+Docs:
+- Android Jetpack Docs (https://developer.android.com/jetpack)
+- iOS Security Best Practices (https://developer.apple.com/security/)
+
+Learning Platform:
+- RayWenderlich
+- Mobile Dev Memo
+
+Projects Suggestion:
+1. Build a ride-sharing app prototype.
+2. Develop a subscription-based news aggregator app.
+
+Certificate Course:
+- "AWS Certified DevOps Engineer – Professional"
+- "Google Cloud Mobile App Developer" (Google)
+
+Learning Resources:
+- "Android Security Internals" by Nikolay Elenkov
+- "Pro iOS Security and Forensics" by Jesse Feiler

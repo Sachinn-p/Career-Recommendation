@@ -1,0 +1,104 @@
+Domain: Data Science
+Type: Beginner
+
+Courses:
+- "Data Science for Everyone" (DataCamp)
+- "Python for Data Science and Machine Learning Bootcamp" (Udemy)
+
+Roadmap:
+1. Learn Python basics (syntax, data structures, libraries like NumPy, Pandas, Matplotlib, and Seaborn).
+2. Understand fundamental statistics (mean, median, variance, probability distributions).
+3. Learn SQL for data querying and manipulation.
+4. Get familiar with exploratory data analysis (EDA) and data visualization techniques.
+5. Work on small datasets using Jupyter Notebook.
+
+Docs:
+- Python Official Documentation (https://docs.python.org/)
+- Pandas User Guide (https://pandas.pydata.org/docs/)
+
+Learning Platform:
+- Kaggle
+- Google Colab
+
+Projects Suggestion:
+1. Analyze customer purchasing behavior from an e-commerce dataset.
+2. Create a dashboard for visualizing COVID-19 trends.
+
+Certificate Course:
+- "IBM Data Science Professional Certificate" (Coursera)
+- "Google Data Analytics Certificate" (Google)
+
+Learning Resources:
+- "Python Data Science Handbook" by Jake VanderPlas
+- "Storytelling with Data" by Cole Nussbaumer Knaflic
+
+---
+
+Domain: Data Science
+Type: Intermediate
+
+Courses:
+- "Applied Data Science with Python" (University of Michigan, Coursera)
+- "Machine Learning for Data Science and Analytics" (Columbia University, edX)
+
+Roadmap:
+1. Understand machine learning concepts and algorithms.
+2. Learn feature engineering and data preprocessing techniques.
+3. Study time series forecasting and unsupervised learning methods.
+4. Explore cloud platforms for scalable data processing (AWS, GCP, Azure).
+
+Docs:
+- Scikit-Learn Documentation (https://scikit-learn.org/stable/user_guide.html)
+- SQL Official Documentation (https://www.postgresql.org/docs/)
+
+Learning Platform:
+- AWS Data Analytics
+- Databricks
+
+Projects Suggestion:
+1. Develop a recommendation system for movie ratings.
+2. Perform sentiment analysis on customer reviews.
+
+Certificate Course:
+- "Data Science and Machine Learning Bootcamp" (Udemy)
+- "MIT Data Science and Big Data Analytics" (MIT)
+
+Learning Resources:
+- "Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow" by Aurélien Géron
+- "The Elements of Statistical Learning" by Hastie, Tibshirani, and Friedman
+
+---
+
+Domain: Data Science
+Type: Advanced
+
+Courses:
+- "Deep Learning Specialization" (DeepLearning.AI, Coursera)
+- "Big Data and Data Science" (Harvard University, edX)
+
+Roadmap:
+1. Master deep learning techniques, including CNNs and RNNs.
+2. Learn model deployment strategies using Flask, FastAPI, or Docker.
+3. Explore big data technologies like Hadoop, Spark, and Apache Kafka.
+4. Stay updated with cutting-edge research in data science.
+
+Docs:
+- TensorFlow Documentation (https://www.tensorflow.org/)
+- PyTorch Documentation (https://pytorch.org/docs/)
+
+Learning Platform:
+- Google Cloud AI Platform
+- NVIDIA NGC
+
+Projects Suggestion:
+1. Build an anomaly detection system for fraud detection.
+2. Develop a predictive model for financial risk assessment.
+
+Certificate Course:
+- "Harvard Data Science Professional Certificate" (Harvard University, edX)
+- "NVIDIA Deep Learning Institute Certification"
+
+Learning Resources:
+- "Deep Learning with Python" by François Chollet
+- Research Papers (arXiv, NeurIPS, ICML)
+
