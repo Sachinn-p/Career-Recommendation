@@ -1,9 +1,5 @@
-langchain
-google-cloud-aiplatform
-langchain_community
-langchain_google_vertexai
 streamlit
-pillow
+pydantic
 google-generativeai
 beautifulsoup4
-chromadb
+requests

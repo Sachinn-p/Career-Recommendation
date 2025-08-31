@@ -9,7 +9,6 @@ import requests
 from bs4 import BeautifulSoup
 import random
 import google.generativeai as genai
-from google.generativeai.types import content_types
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -93,9 +92,27 @@ class DomainKnowledgeBase:
             for filename in os.listdir(domains_dir):
                 if filename.endswith('.txt'):
                     domain_name = filename.replace('.txt', '')
-                    with open(os.path.join(domains_dir, filename), 'r') as f:
-                        content = f.read()
+                    file_path = os.path.join(domains_dir, filename)
+                    
+                    # Try UTF-8 first, then fallback to other encodings
+                    content = None
+                    for encoding in ['utf-8', 'latin-1', 'cp1252', 'iso-8859-1']:
+                        try:
+                            with open(file_path, 'r', encoding=encoding) as f:
+                                content = f.read()
+                            logger.info(f"Successfully loaded {filename} with {encoding} encoding")
+                            break
+                        except UnicodeDecodeError:
+                            continue
+                        except Exception as e:
+                            logger.error(f"Error reading {filename}: {e}")
+                            break
+                    
+                    if content is not None:
                         self.domains[domain_name] = self._parse_domain_content(content)
+                    else:
+                        logger.error(f"Could not read {filename} with any encoding")
+                        
         except Exception as e:
             logger.error(f"Error loading domains: {e}")
             self.domains["default"] = self._get_default_domain()
@@ -241,9 +258,13 @@ class JobFetcher:
                         posted_date="Recent",  # Simplified; real data would need specific parsing
                         description="Visit the link for more details"
                     ))
+            except requests.RequestException as e:
+                logger.warning(f"Network error fetching jobs from {platform}: {e}")
+                # Fallback to mock data for network issues
+                jobs.extend(self._generate_mock_jobs(domain, platform))
             except Exception as e:
                 logger.error(f"Error fetching jobs from {platform}: {e}")
-                # Fallback to mock data
+                # Fallback to mock data for other errors
                 jobs.extend(self._generate_mock_jobs(domain, platform))
         
         return jobs[:5]  # Limit to 5 jobs for display
@@ -271,7 +292,7 @@ class CareerRecommendationSystem:
         
         # Initialize the model
         self.model = genai.GenerativeModel(
-            model_name="gemini-1.5-pro",
+            model_name="gemini-2.0-flash",
             generation_config={
                 "temperature": 0.2,
                 "max_output_tokens": 2048,
@@ -303,14 +324,97 @@ class CareerRecommendationSystem:
             response = self.model.generate_content(prompt)
             if response.text:
                 # Try to parse the JSON structure from the response
-                parsed_data = self._extract_json_from_response(response.text)
-                return CareerGuidance(**parsed_data)
+                try:
+                    parsed_data = self._extract_json_from_response(response.text)
+                    return CareerGuidance(**parsed_data)
+                except Exception as json_error:
+                    logger.error(f"JSON parsing failed, trying simplified prompt: {json_error}")
+                    # Try with a simplified prompt
+                    return self._generate_with_simplified_prompt(domain, level, domain_knowledge)
             else:
                 logger.error("Received empty response from LLM")
                 return self._generate_fallback_guidance(domain, level, domain_knowledge)
             
         except Exception as e:
             logger.error(f"Error generating guidance: {e}")
+            return self._generate_fallback_guidance(domain, level, domain_knowledge)
+
+    def _generate_with_simplified_prompt(self, domain: str, level: str, domain_knowledge: Dict[str, Any]) -> CareerGuidance:
+        """Generate guidance with a simplified, more reliable prompt"""
+        simplified_prompt = f"""
+        Create a career guidance plan for a {level} level professional in {domain}.
+        
+        Provide a JSON response with this exact structure:
+        {{
+            "domain_overview": "Brief overview of {domain}",
+            "current_industry_trends": ["trend1", "trend2", "trend3"],
+            "skill_roadmap": [
+                {{
+                    "skill_name": "Core skill name",
+                    "importance_level": "Essential",
+                    "time_to_master": "3-6 months",
+                    "prerequisites": [],
+                    "resources": ["resource1"],
+                    "industry_applications": ["application1"],
+                    "proficiency_metrics": ["metric1"]
+                }}
+            ],
+            "recommended_courses": [
+                {{
+                    "course_name": "Course name",
+                    "platform": "Platform",
+                    "link": "",
+                    "duration": "8 weeks",
+                    "difficulty_level": "{level}",
+                    "prerequisites": [],
+                    "key_topics": ["topic1"],
+                    "certification": true,
+                    "price": "Free"
+                }}
+            ],
+            "project_suggestions": [
+                {{
+                    "title": "Beginner {domain} Project",
+                    "description": "Build a practical project",
+                    "skills_practiced": ["skill1"],
+                    "difficulty_level": "{level}",
+                    "estimated_duration": "4 weeks",
+                    "resources_needed": [],
+                    "learning_outcomes": [],
+                    "implementation_steps": []
+                }}
+            ],
+            "career_growth_paths": [
+                {{
+                    "title": "Junior {domain} Role",
+                    "description": "Entry level position",
+                    "salary_range": "$40,000-$60,000",
+                    "required_experience": "0-2 years",
+                    "key_responsibilities": [],
+                    "required_skills": [],
+                    "growth_opportunities": [],
+                    "industry_demand": "High",
+                    "typical_job_titles": []
+                }}
+            ],
+            "certifications_needed": ["Certification 1"],
+            "networking_suggestions": ["Join professional groups"],
+            "interview_preparation": ["Study fundamentals"],
+            "industry_resources": ["Resource 1"]
+        }}
+        
+        Respond only with valid JSON.
+        """
+        
+        try:
+            response = self.model.generate_content(simplified_prompt)
+            if response.text:
+                parsed_data = self._extract_json_from_response(response.text)
+                return CareerGuidance(**parsed_data)
+            else:
+                return self._generate_fallback_guidance(domain, level, domain_knowledge)
+        except Exception as e:
+            logger.error(f"Simplified prompt also failed: {e}")
             return self._generate_fallback_guidance(domain, level, domain_knowledge)
 
     def _create_guidance_prompt(self, domain: str, level: str, domain_knowledge: Dict[str, Any]) -> str:
@@ -397,7 +501,15 @@ class CareerRecommendationSystem:
         
         Make all recommendations highly specific to {domain} and {level} level.
         Include actual course names, specific project details, and realistic salary ranges.
-        IMPORTANT: Respond with ONLY the JSON object, no other text.
+        
+        CRITICAL FORMATTING REQUIREMENTS:
+        - Respond with ONLY valid JSON - no markdown, no explanations, no extra text
+        - All strings must be properly quoted
+        - No trailing commas
+        - All arrays and objects must be properly closed
+        - Use double quotes only, never single quotes
+        
+        IMPORTANT: Respond with ONLY the JSON object, no other text or formatting.
         """
 
     def _extract_json_from_response(self, response_text: str) -> Dict[str, Any]:
@@ -414,83 +526,255 @@ class CareerRecommendationSystem:
                 
                 if json_start >= 0 and json_end > json_start:
                     json_str = response_text[json_start:json_end]
+                    
+                    # Try to fix common JSON issues
+                    json_str = self._fix_json_issues(json_str)
+                    
                     return json.loads(json_str)
                 else:
                     raise ValueError("Could not find JSON object in response")
             except Exception as e:
                 logger.error(f"Error extracting JSON: {e}")
+                # Log the problematic response for debugging
+                logger.error(f"Problematic response (first 500 chars): {response_text[:500]}")
                 raise
+
+    def _fix_json_issues(self, json_str: str) -> str:
+        """Fix common JSON formatting issues"""
+        import re
+        
+        # Remove trailing commas before closing brackets/braces
+        json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)
+        
+        # Fix incomplete strings at the end
+        json_str = re.sub(r'"\s*$', '"}', json_str)
+        
+        # Fix missing quotes around unquoted strings
+        json_str = re.sub(r':\s*([a-zA-Z][a-zA-Z0-9\s]*)\s*([,}])', r': "\1"\2', json_str)
+        
+        return json_str
 
     def fetch_recent_jobs(self, domain: str) -> List[JobListing]:
         return self.job_fetcher.fetch_jobs(domain)
 
     def _generate_fallback_guidance(self, domain: str, level: str, domain_knowledge: Dict[str, Any]) -> CareerGuidance:
+        """Generate comprehensive fallback guidance when AI generation fails"""
+        # Create more detailed fallback content
+        core_skills = domain_knowledge.get('core_skills', [])
+        specializations = domain_knowledge.get('specializations', [])
+        tools_tech = domain_knowledge.get('tools_and_technologies', [])
+        
         return CareerGuidance(
-            domain_overview=domain_knowledge.get('description', f'Overview of {domain}'),
-            current_industry_trends=domain_knowledge.get('industry_standards', []),
+            domain_overview=f"The {domain} field is a dynamic and growing area that combines {', '.join(core_skills[:3])} to solve real-world problems. As a {level} professional, you'll focus on building foundational skills and gaining practical experience through hands-on projects.",
+            
+            current_industry_trends=[
+                f"Increased demand for {domain} professionals",
+                f"Growing adoption of {tools_tech[0] if tools_tech else 'modern tools'}",
+                "Remote work opportunities expanding",
+                "Focus on practical, project-based learning",
+                "Industry emphasis on continuous skill development"
+            ],
+            
             skill_roadmap=[
                 SkillDetail(
                     skill_name=skill,
                     importance_level="Essential" if idx < 3 else "Important",
-                    time_to_master="3-6 months" if level == "Beginner" else "1-2 months",
-                    prerequisites=[],
-                    resources=[],
-                    industry_applications=[],
-                    proficiency_metrics=[]
+                    time_to_master="3-6 months" if level == "Beginner" else "1-3 months",
+                    prerequisites=[] if idx == 0 else [core_skills[0]] if core_skills else [],
+                    resources=[
+                        "Online tutorials and courses",
+                        "Practice exercises and projects",
+                        "Community forums and documentation"
+                    ],
+                    industry_applications=[
+                        f"Entry-level {domain} positions",
+                        f"Freelance {domain} projects",
+                        f"Personal {domain} development"
+                    ],
+                    proficiency_metrics=[
+                        "Complete beginner projects",
+                        "Build portfolio applications",
+                        "Pass practical assessments"
+                    ]
                 )
-                for idx, skill in enumerate(domain_knowledge.get('core_skills', []))
+                for idx, skill in enumerate(core_skills[:5] if core_skills else [f"{domain} Fundamentals", "Problem Solving", "Technical Skills"])
             ],
+            
             recommended_courses=[
                 CourseDetail(
-                    course_name=f"{skill} for {level}s",
-                    platform="Coursera/Udemy",
+                    course_name=f"Complete {domain} Course for {level}s",
+                    platform="Coursera",
+                    link="https://coursera.org",
                     duration="8-12 weeks",
                     difficulty_level=level,
                     prerequisites=[],
-                    key_topics=[],
+                    key_topics=core_skills[:3] if core_skills else [f"{domain} basics"],
                     certification=True,
-                    price="Variable"
+                    price="$39-79/month"
+                ),
+                CourseDetail(
+                    course_name=f"{domain} Fundamentals",
+                    platform="Udemy",
+                    link="https://udemy.com",
+                    duration="6-8 weeks",
+                    difficulty_level=level,
+                    prerequisites=[],
+                    key_topics=specializations[:3] if specializations else [f"{domain} concepts"],
+                    certification=True,
+                    price="$50-100"
+                ),
+                CourseDetail(
+                    course_name=f"Practical {domain} Projects",
+                    platform="edX",
+                    link="https://edx.org",
+                    duration="4-6 weeks",
+                    difficulty_level=level,
+                    prerequisites=core_skills[:1] if core_skills else [],
+                    key_topics=tools_tech[:3] if tools_tech else ["hands-on practice"],
+                    certification=True,
+                    price="Free (Verified Certificate: $99)"
                 )
-                for skill in domain_knowledge.get('core_skills', [])[:3]
             ],
+            
             project_suggestions=[
                 ProjectDetail(
-                    title=f"{domain} {level} Project",
-                    description=f"Build a practical {domain} project using {', '.join(domain_knowledge.get('tools_and_technologies', [])[:3])}",
-                    skills_practiced=domain_knowledge.get('core_skills', [])[:3],
+                    title=f"{domain} Portfolio Project",
+                    description=f"Build a comprehensive {domain} project that demonstrates your understanding of {', '.join(core_skills[:3]) if core_skills else 'core concepts'}. This project will serve as a cornerstone piece for your portfolio.",
+                    skills_practiced=core_skills[:4] if core_skills else [f"{domain} fundamentals"],
                     difficulty_level=level,
                     estimated_duration="4-6 weeks",
-                    resources_needed=[],
-                    learning_outcomes=[],
-                    implementation_steps=[]
+                    resources_needed=[
+                        "Computer with internet access",
+                        "Basic development environment",
+                        "Online learning resources"
+                    ],
+                    learning_outcomes=[
+                        f"Understand {domain} fundamentals",
+                        "Build practical problem-solving skills",
+                        "Create a portfolio-worthy project",
+                        "Gain hands-on experience"
+                    ],
+                    implementation_steps=[
+                        "Define project scope and requirements",
+                        "Set up development environment",
+                        "Break down project into smaller tasks",
+                        "Implement core functionality",
+                        "Test and debug the solution",
+                        "Document and present the project"
+                    ]
+                ),
+                ProjectDetail(
+                    title=f"Real-world {domain} Application",
+                    description=f"Create a practical application that solves a real-world problem using {domain} principles and {', '.join(tools_tech[:2]) if tools_tech else 'modern tools'}.",
+                    skills_practiced=core_skills[:3] if core_skills else [f"{domain} application"],
+                    difficulty_level=level,
+                    estimated_duration="3-4 weeks",
+                    resources_needed=[
+                        "Development tools and software",
+                        "Sample datasets or materials",
+                        "Documentation and tutorials"
+                    ],
+                    learning_outcomes=[
+                        "Apply theoretical knowledge to practical problems",
+                        "Learn industry best practices",
+                        "Build confidence in problem-solving"
+                    ],
+                    implementation_steps=[
+                        "Identify a real-world problem to solve",
+                        "Research existing solutions",
+                        "Design your approach",
+                        "Implement and iterate",
+                        "Share and get feedback"
+                    ]
                 )
             ],
+            
             career_growth_paths=[
                 CareerPath(
-                    title=career_level,
-                    description=f"Professional {domain} role focusing on {', '.join(domain_knowledge.get('specializations', [])[:2])}",
-                    required_skills=domain_knowledge.get('core_skills', [])[:4],
+                    title=f"Junior {domain} Professional",
+                    description=f"Entry-level position focusing on {', '.join(specializations[:2]) if specializations else 'foundational skills'} with opportunities for growth and learning.",
+                    salary_range="$45,000 - $65,000" if level == "Beginner" else "$55,000 - $75,000",
+                    required_experience="0-2 years",
+                    key_responsibilities=[
+                        f"Assist with {domain} projects and tasks",
+                        "Learn and apply industry best practices",
+                        "Collaborate with senior team members",
+                        "Contribute to project documentation"
+                    ],
+                    required_skills=core_skills[:4] if core_skills else [f"{domain} basics"],
+                    growth_opportunities=[
+                        f"Senior {domain} Professional",
+                        f"{domain} Specialist",
+                        f"{domain} Team Lead",
+                        f"Project Manager"
+                    ],
                     industry_demand="High",
-                    salary_range="Competitive",
-                    required_experience=f"{level} level experience in {domain}",
-                    key_responsibilities=[],
-                    growth_opportunities=[],
-                    typical_job_titles=[]
+                    typical_job_titles=[
+                        f"Junior {domain} Analyst",
+                        f"{domain} Associate",
+                        f"Entry-level {domain} Developer",
+                        f"{domain} Trainee"
+                    ]
+                ),
+                CareerPath(
+                    title=f"Mid-level {domain} Professional",
+                    description=f"Experienced role with responsibility for {', '.join(specializations[:3]) if specializations else 'advanced projects'} and mentoring junior staff.",
+                    salary_range="$65,000 - $90,000",
+                    required_experience="2-5 years",
+                    key_responsibilities=[
+                        f"Lead {domain} projects independently",
+                        "Mentor junior team members",
+                        "Design and implement solutions",
+                        "Communicate with stakeholders"
+                    ],
+                    required_skills=core_skills if core_skills else [f"Advanced {domain} skills"],
+                    growth_opportunities=[
+                        f"Senior {domain} Professional",
+                        f"{domain} Manager",
+                        f"Technical Lead",
+                        f"Consultant"
+                    ],
+                    industry_demand="High",
+                    typical_job_titles=[
+                        f"{domain} Analyst",
+                        f"{domain} Developer",
+                        f"{domain} Specialist",
+                        f"{domain} Consultant"
+                    ]
                 )
-                for career_level in domain_knowledge.get('career_levels', [f"{level} {domain} Professional"])
             ],
-            certifications_needed=domain_knowledge.get('certification_paths', []),
+            
+            certifications_needed=[
+                f"Professional {domain} Certification",
+                f"{domain} Fundamentals Certificate",
+                f"Industry-recognized {domain} Credential"
+            ] + (domain_knowledge.get('certification_paths', [])[:3]),
+            
             networking_suggestions=[
-                f"Join {domain} professional groups",
-                f"Attend {domain} conferences and meetups",
-                f"Connect with professionals at {', '.join(domain_knowledge.get('key_companies', [])[:3])}"
+                f"Join local {domain} meetups and user groups",
+                f"Attend {domain} conferences and workshops",
+                f"Connect with {domain} professionals on LinkedIn",
+                f"Participate in online {domain} communities",
+                "Follow industry leaders and companies on social media",
+                f"Join professional {domain} associations"
             ],
+            
             interview_preparation=[
-                f"Study {skill} fundamentals" for skill in domain_knowledge.get('core_skills', [])[:3]
+                f"Study {domain} fundamentals and core concepts",
+                "Practice explaining your projects clearly",
+                "Prepare examples of problem-solving experiences",
+                "Review common technical questions",
+                "Practice coding/practical exercises",
+                "Prepare questions about company culture and growth"
             ],
+            
             industry_resources=[
-                f"Leading companies: {', '.join(domain_knowledge.get('key_companies', []))}",
-                f"Key technologies: {', '.join(domain_knowledge.get('tools_and_technologies', []))}"
+                f"Leading {domain} companies: " + ', '.join(domain_knowledge.get('key_companies', ['Google', 'Microsoft', 'Amazon'])[:5]),
+                f"Key technologies: " + ', '.join(tools_tech[:5] if tools_tech else ['Modern tools and frameworks']),
+                f"Professional communities: {domain} forums and Discord servers",
+                f"Learning platforms: Coursera, Udemy, Pluralsight, LinkedIn Learning",
+                f"Industry publications and blogs about {domain}",
+                "Open source projects and GitHub repositories"
             ]
         )
 
@@ -503,6 +787,14 @@ class StreamlitCareerApp:
 
     def initialize_system(self, api_key: str) -> None:
         try:
+            # Basic API key validation
+            if not api_key or len(api_key) < 10:
+                st.error("❌ Invalid API key. Please provide a valid Gemini API key.")
+                return
+            
+            if not api_key.startswith('AIza'):
+                st.warning("⚠️ API key format may be incorrect. Gemini API keys typically start with 'AIza'.")
+            
             career_system = CareerRecommendationSystem(api_key=api_key)
             st.session_state.career_system = career_system
             st.success("✅ Career Guidance System Successfully Initialized!")
@@ -697,18 +989,6 @@ class StreamlitCareerApp:
             self._handle_qa_section(domain)
         else:
             st.info("👈 Please enter your Gemini API key in the sidebar to get started!")
-        #     st.markdown("""
-        #     ### Welcome to Career Guide Pro!
-            
-        #     This tool helps you:
-        #     - Get personalized career guidance based on your domain and experience level
-        #     - Find relevant job listings
-        #     - Get answers to specific career questions
-        #     - Develop a structured learning path
-            
-        #     To get started, you'll need a Gemini API key from Google. 
-        #     You can get one for free at [Google AI Studio](https://makersuite.google.com/app/apikey).
-        #     """)
 
     def _get_user_selections(self) -> tuple[str, str]:
         col1, col2 = st.columns(2)
